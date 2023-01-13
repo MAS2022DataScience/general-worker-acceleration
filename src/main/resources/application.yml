@@ -1,0 +1,66 @@
+topic:
+  general-player-ball:
+    name: general_01_player_ball
+    replication-factor: 2
+    partitions: 3
+  general-acceleration:
+    name: general_mva
+    replication-factor: 2
+    partitions: 3
+
+acceleration:
+  parameter:
+    session-length: 1000 # [ms]
+    session-grace-time: 10000 # [ms]
+    velocity-threshold: 2 # [m/s]
+    acceleration-threshold: 0 # [m/s^2]
+    min-acceleration-length: 1000 # [ms]
+
+mva: # y = -.23 * x + 5.99
+  slope: -0.23
+  intercept: 5.99
+  vipd: 8.33 # [m/s]
+  mva-percent-threshold: 75 # [%]
+  vipd-percent-threshold: 40 # [%]
+
+spring:
+  application:
+    name: "general-worker-acceleration"
+
+  kafka:
+    bootstrap.servers:
+      - ${DATAPLATFORM_IP}:9092
+      - ${DATAPLATFORM_IP}:9093
+    streams:
+      application-id: ${spring.application.name}
+      client-id: ${spring.application.name}-stream
+      replication-factor: 2
+      properties:
+        #commit.interval.ms: 100
+        #group-id: <group_id> #this shows up in KafkaStreamsConfiguration
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+        # This is the default: log, fail and stop processing records (stop stream)
+        default.deserialization.exception.handler: org.apache.kafka.streams.errors.LogAndFailExceptionHandler
+        auto-offset-reset: earliest
+        #compression-type: lz4 #this shows up in KafkaStreamsConfiguration
+        #state.cleanup.delay.ms: 600000
+        #default.timestamp.extractor: io.confluent.kafka.streams.serdes.avro.GenericAvroTimestampExtractor
+        #DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG
+        default:
+          timestamp:
+            extractor:
+              class:
+                config: PlayerBallEventTimestampExtractor.class.getName()
+    properties:
+      bootstrap:
+        servers:
+          - ${spring.kafka.bootstrap.servers[0]}
+          - ${spring.kafka.bootstrap.servers[1]}
+      schema:
+        registry:
+          url: "http://${DATAPLATFORM_IP}:8081"
+    # At application startup a missing topic on the broker will not fail the
+    # application startup
+    listener:
+      missing-topics-fatal: false
