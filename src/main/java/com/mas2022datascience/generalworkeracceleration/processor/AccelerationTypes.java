@@ -1,4 +1,4 @@
-package com.mas2022datascience.generalworkermva.processor;
+package com.mas2022datascience.generalworkeracceleration.processor;
 
 public enum AccelerationTypes {
   SPRINT("SPRINT"), SHORTACCELERATION("SHORTACCELERATION"), INCREMENTALRUN("INCREMENTALRUN"), JOG("JOG");

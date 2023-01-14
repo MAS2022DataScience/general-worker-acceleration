@@ -1,4 +1,4 @@
-package com.mas2022datascience.generalworkermva.processor;
+package com.mas2022datascience.generalworkeracceleration.processor;
 
 import com.mas2022datascience.avro.v1.PlayerBall;
 import java.time.Instant;

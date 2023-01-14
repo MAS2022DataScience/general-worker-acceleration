@@ -1,4 +1,4 @@
-package com.mas2022datascience.generalworkermva;
+package com.mas2022datascience.generalworkeracceleration;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
