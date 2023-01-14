@@ -149,6 +149,7 @@ public class KafkaStreamsRunnerDSL {
         .toStream()
         .filter((k, v) -> !(v.getPlayerId().equals("0"))) // filter out the ball
         .selectKey((key, value) -> key.key()) // remove window from key
+        // MVA calculation
         .mapValues(v -> {
           double mva = slope * v.getVMin() + intercept;
           double vipdPercent = 100 / vipd * v.getVMin();
