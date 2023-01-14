@@ -4,7 +4,7 @@ topic:
     replication-factor: 2
     partitions: 3
   general-acceleration:
-    name: general_mva
+    name: general_acceleration
     replication-factor: 2
     partitions: 3
 
