@@ -61,11 +61,6 @@ public class KafkaStreamsRunnerDSL {
     final Serde<Acceleration> accelerationSerde = new SpecificAvroSerde<>();
     accelerationSerde.configure(serdeConfig, false); // `false` for record values
 
-    final StoreBuilder<KeyValueStore<String, PlayerBall>> sprintStore = Stores
-        .keyValueStoreBuilder(Stores.persistentKeyValueStore("AccelerationStore"),
-            Serdes.String(), playerBallSerde);
-    kStreamBuilder.addStateStore(sprintStore);
-
     SessionWindows sessionWindow = SessionWindows.ofInactivityGapAndGrace(
         Duration.ofMillis(sessionLength), Duration.ofMillis(sessionGraceTime));
 

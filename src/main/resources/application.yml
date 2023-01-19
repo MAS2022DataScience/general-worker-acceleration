@@ -60,6 +60,8 @@ spring:
       schema:
         registry:
           url: "http://${DATAPLATFORM_IP}:8081"
+      auto.register.schemas: true
+      use.latest.version: true
     # At application startup a missing topic on the broker will not fail the
     # application startup
     listener:
