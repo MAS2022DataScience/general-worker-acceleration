@@ -42,7 +42,7 @@ spring:
         default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
         # This is the default: log, fail and stop processing records (stop stream)
         default.deserialization.exception.handler: org.apache.kafka.streams.errors.LogAndFailExceptionHandler
-        auto-offset-reset: earliest
+        #auto-offset-reset: earliest
         #compression-type: lz4 #this shows up in KafkaStreamsConfiguration
         #state.cleanup.delay.ms: 600000
         #default.timestamp.extractor: io.confluent.kafka.streams.serdes.avro.GenericAvroTimestampExtractor
@@ -60,8 +60,8 @@ spring:
       schema:
         registry:
           url: "http://${DATAPLATFORM_IP}:8081"
-      auto.register.schemas: true
-      use.latest.version: true
+      #auto.register.schemas: true
+      #use.latest.version: true
     # At application startup a missing topic on the broker will not fail the
     # application startup
     listener:
