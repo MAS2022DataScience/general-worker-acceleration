@@ -69,6 +69,7 @@ public class KafkaStreamsRunnerDSL {
             .withTimestampExtractor(new PlayerBallEventTimestampExtractor()));
 
     KGroupedStream<String, PlayerBall> grouped = stream
+        .filter((k, v) -> !(v.getPlayerId().equals("0"))) // filter out the ball
         .filter((k, v) -> {
           if (v.getVelocity() == null || v.getAccelleration() == null) return false;
           return v.getVelocity() > velocityThreshold && v.getAccelleration() > accelerationThreshold;
@@ -142,7 +143,6 @@ public class KafkaStreamsRunnerDSL {
     // publish result
     sumOfValues
         .toStream()
-        .filter((k, v) -> !(v.getPlayerId().equals("0"))) // filter out the ball
         .selectKey((key, value) -> key.key()) // remove window from key
         // MVA calculation
         .mapValues(v -> {
