@@ -84,6 +84,7 @@ public class KafkaStreamsRunnerDSL {
     Aggregator<String, PlayerBall, Acceleration> aggregator = (key, value, aggValue) -> {
       aggValue.setTs(value.getTs());
       aggValue.setPlayerId(value.getPlayerId());
+      aggValue.setTeamId(value.getTeamId());
       aggValue.setMatchId(value.getMatchId());
       aggValue.setVMin(Math.min(aggValue.getVMin(), value.getVelocity()));
       aggValue.setVMax(Math.max(aggValue.getVMax(), value.getVelocity()));
@@ -131,9 +132,9 @@ public class KafkaStreamsRunnerDSL {
                 .build(),
             // aggregator
             aggregator,
-            // session merger
+            // merger
             merger,
-            // serializer
+            // state store
             Materialized.<String, Acceleration, SessionStore<Bytes, byte[]>>as("acceleration-store")
                 .withKeySerde(Serdes.String())
                 .withValueSerde(accelerationSerde)
@@ -176,6 +177,9 @@ public class KafkaStreamsRunnerDSL {
           }
           return v;
         })
+//        .foreach((k, v) -> {
+//          System.out.println(k + " -- " + v);
+//        })
         .to(topicOut);
 
     return stream;
