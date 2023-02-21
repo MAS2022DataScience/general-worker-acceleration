@@ -48,7 +48,7 @@ public class KafkaStreamsRunnerDSL {
   // MVA
   @Value(value = "${mva.slope}") private double slope;
   @Value(value = "${mva.intercept}") private double intercept;
-  @Value(value = "${mva.vipd}") private double vipd;
+  @Value(value = "${mva.vipd}") private double vipdIntercept;
 
   @Value(value = "${mva.vipd-percent-threshold}") private double vipdPercentThreshold;
   @Value(value = "${mva.mva-percent-threshold}") private double mvaPercentThreshold;
@@ -155,7 +155,7 @@ public class KafkaStreamsRunnerDSL {
         // MVA calculation
         .mapValues(v -> {
           double mva = slope * v.getVMin() + intercept;
-          double vipdPercent = 100 / vipd * v.getVMin();
+          double vipdPercent = 100 / vipdIntercept * (v.getVMax() - v.getVMin());
           v.setMvaPercent(100 / mva * v.getAMax());
           // sprint classification
           if (v.getMvaPercent() < mvaPercentThreshold) {
