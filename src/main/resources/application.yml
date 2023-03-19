@@ -28,28 +28,46 @@ spring:
     name: "general-worker-acceleration"
 
   kafka:
+    bootstrap-servers:
+      - kafka-1:19092
+      - kafka-2:19093
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      # This is the default: log, fail and stop processing records (stop stream)
+      default.deserialization.exception.handler: org.apache.kafka.streams.errors.LogAndFailExceptionHandler
+      properties:
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+    consumer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      # This is the default: log, fail and stop processing records (stop stream)
+      default.deserialization.exception.handler: org.apache.kafka.streams.errors.LogAndFailExceptionHandler
+      properties:
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
     streams:
       application-id: ${spring.application.name}
       client-id: ${spring.application.name}-stream
       replication-factor: 2
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      # This is the default: log, fail and stop processing records (stop stream)
+      #default.deserialization.exception.handler: org.apache.kafka.streams.errors.LogAndContinueExceptionHandler
+      default.deserialization.exception.handler: org.apache.kafka.streams.errors.LogAndFailExceptionHandler
       properties:
         #commit.interval.ms: 100
         #group-id: <group_id> #this shows up in KafkaStreamsConfiguration
         default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
         default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
-        # This is the default: log, fail and stop processing records (stop stream)
-        default.deserialization.exception.handler: org.apache.kafka.streams.errors.LogAndFailExceptionHandler
-        auto-offset-reset: earliest
+        #auto-offset-reset: earliest
         #compression-type: lz4 #this shows up in KafkaStreamsConfiguration
         #state.cleanup.delay.ms: 600000
         default.timestamp.extractor.class.config: PlayerBallEventTimestampExtractor.class.getName()
     properties:
-      bootstrap.servers:
-        - ${DATAPLATFORM_IP}:9092
-        - ${DATAPLATFORM_IP}:9093
-      schema.registry.url: "http://${DATAPLATFORM_IP}:8081"
-      auto.register.schemas: true
-      use.latest.version: true
+      schema.registry.url: "http://schema-registry-1:8081"
+      #schema.registry.url: "http://${DATAPLATFORM_IP}:8081"
     # At application startup a missing topic on the broker will not fail the
     # application startup
     listener:
