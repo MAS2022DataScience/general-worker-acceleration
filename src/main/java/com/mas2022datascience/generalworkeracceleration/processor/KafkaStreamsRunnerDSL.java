@@ -155,7 +155,7 @@ public class KafkaStreamsRunnerDSL {
         // MVA calculation
         .mapValues(v -> {
           double mva = slope * (v.getVMin()*3.6) + intercept;
-          double vipdPercent = 100 / (vipdIntercept*3.6) * ((v.getVMax() - v.getVMin())*3.6);
+          double vipdPercent = 100 / vipdIntercept * (v.getVMax() - v.getVMin());
           v.setMvaPercent(100 / mva * v.getAMax());
           // sprint classification
           if (v.getMvaPercent() < mvaPercentThreshold) {
